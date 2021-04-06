@@ -1,0 +1,23 @@
+//호출측 코드.
+
+            String query1 = String.format("[\n" +
+                    "{\n" +
+                    "    $match:{\n" +
+                    "        create_date : {$gte :'%s' , $lt : '%s'},\n" +
+                    "    }\n" +
+                    "},\n" +
+                    "{\n" +
+                    "    $group:{\n" +
+                    "        _id:{key1:\"$key1\",key2:\"$key2\",key3:\"$key3\",key4:\"$key4\"},\n" +
+                    "        count:{'$sum':1}\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "]",startdate,enddate);
+                    
+                    등으로 몽고 DB query문 그대로 가져와서
+AggregateIterable<Document> aggregate = mongo.aggregate(DB_NAME,COLLECTION_NAME, query1); 과 같이 사용.
+
+적당히
+for(Document document : aggregate){
+~~~
+} 돌면서 동작 수행.
