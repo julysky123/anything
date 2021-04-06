@@ -14,7 +14,7 @@
                     "}\n" +
                     "]",startdate,enddate);
                     
-                    등으로 몽고 DB query문 그대로 가져와서
+                    등으로 몽고 DB query문 그대로 가져오거나 시간 부분 처럼 일부 수정해서
 AggregateIterable<Document> aggregate = mongo.aggregate(DB_NAME,COLLECTION_NAME, query1); 과 같이 사용.
 
 적당히
