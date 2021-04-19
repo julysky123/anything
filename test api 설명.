@@ -41,12 +41,33 @@ import static org.hamcrest.core.Is.is;
 given(userService.getUsers()).willReturn(mockUsers);  
   :테스트 중에 userService.getUsers()를 만나면 mockUsers 로 대체한다.
 
+given(userService.addUser(any())).will(
+    invocation ->{
+      User user = invocation.getArgument(0);
+      return User.builder()
+                .id("id")
+                .name("MJ")
+                .email("M@n.com")
+                .phoneNumber("010-0000-0000").build();
+      }
+   );
+  :테스트 중에 userService.addUser(아무거나)를 만나면
+   들어온 argument 중 첫(0)번째 값을 이용해 return 값을 만든다.
+
+
 mvc.perform(get("/users"))
     .andExpect(status().isOK())
-    .andExpect(content().string(containsString("\"email\":\"se.woon.lee@samsung.com\"")));
+    .andExpect(content().string(containsString("\"email\":\"se@n.com\"")));
   :get method로 /users 호출하면 어떤 결과가 나오는지 확인하는 테스트
   status()가 어떤지.
   content()에 String이 포함되는지 확인.
+  
+mvc.perform(post("/users")
+  .contentType(MediaType.APPLICATION_JSON)
+  .content("{\"name\":\"MJ\",\"email\":\"mj@n.com\",\"phoneNumber\":\"010-0000-0000\"}"))
+  .andExpect(status().isCreated());
+  
+  
   
 verify(userService).getUsers();
   :userService의 getUsers() 메쏘드가 호출되었는지 체크.
