@@ -1,0 +1,59 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+@SpringBootTest : 스프링 테스트 어노테이션
+  @SpringBootTest
+  class UserControllerTest 처럼 class 위에 붙임.
+  
+@AutoConfigureMockMvc : MockMvc 를 사용할 때 class에 붙임.
+  @AutoConfigureMockMvc
+  @SpringBootTest
+  class UserControllerTest {
+      @Autowired
+      private MockMvc mvc;
+      
+@MockBean : 사용하려는 Bean (실제 동작을 수행하지는 않음)
+
+@Autowired : 테스트시 사용할 클래스. 알아서 bean 목록에서 찾아서 주입가능하게 함.
+
+@Test : 테스트 메쏘드
+  @Test
+  public void getUsers(){
+  
+given(userService.getUsers()).willReturn(mockUsers);  
+  :테스트 중에 userService.getUsers()를 만나면 mockUsers 로 대체한다.
+
+mvc.perform(get("/users"))
+    .andExpect(status().isOK())
+    .andExpect(content().string(containsString("\"email\":\"se.woon.lee@samsung.com\"")));
+  :get method로 /users 호출하면 어떤 결과가 나오는지 확인하는 테스트
+  status()가 어떤지.
+  content()에 String이 포함되는지 확인.
+  
+verify(userService).getUsers();
+  :userService의 getUsers() 메쏘드가 호출되었는지 체크.
+verify(userRepository,times(1)).findAll();
+  :userRepository의 findAll() 메쏘드가 1번 호출되었는지 체크.
+  
+assertThat(newUser.getName(),is("WJ"));
+  :newUser.getName() 이 "WJ" 인지 체크
+
+
