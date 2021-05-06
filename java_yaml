@@ -1,0 +1,23 @@
+package test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
+
+public class stu01 {
+	public static void main(String[] args) throws FileNotFoundException {
+		// TODO Auto-generated method stub
+		Yaml y = new Yaml();
+		Reader yamlFile = new FileReader("C:\\Users\\user\\Desktop\\today_20190120\\test\\src\\main\\java\\test\\tst.yml");
+		Map<String, Object> yamlMaps = y.load(yamlFile);
+		System.out.println(yamlMaps.get("name"));
+	}
+}
+
+출처: https://sleep4725.tistory.com/entry/java-yaml-파일-읽기 [길]
+
