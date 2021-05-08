@@ -1,12 +1,18 @@
-tasklist /FI "ImageName eq cmd.exe" /FO CSV
->"이미지 이름","PID","세션 이름","세션#","메모리 사용"
->"cmd.exe","2648","Console","1","4,852 K"
+>tasklist /FI "ImageName eq cmd.exe" /FO CSV
+"이미지 이름","PID","세션 이름","세션#","메모리 사용"
+"cmd.exe","2648","Console","1","4,852 K"
 
-tasklist /FI "ImageName eq cmd.exe" /FO LIST
->
->이미지 이름: cmd.exe
->PID:         2648
->세션 이름:   Console
->세션#:       1
->메모리 사용: 4,756 K
+>tasklist /FI "ImageName eq cmd.exe" /FO LIST
+
+이미지 이름: cmd.exe
+PID:         2648
+세션 이름:   Console
+세션#:       1
+메모리 사용: 4,756 K
+
+>tasklist /FI "ImageName eq cmd.exe" /FO TABLE
+
+이미지 이름                    PID 세션 이름              세션#  메모리 사용
+========================= ======== ================ =========== ============
+cmd.exe                       2648 Console                    1      4,760 K
 
