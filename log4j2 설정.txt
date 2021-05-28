@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration status="debug">
+
+    <Appenders>
+        <!-- 콜솔 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd hh:mm:ss} %5p [%C] %m%n"/>
+        </Console>
+        <RollingFile name="rollingFile" fileName="./logs/defence.log" filePattern="./logs/defence_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%5p | %d | %F | %L | %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <loggers>
+        <root level="info" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="rollingFile"/>
+        </root>
+        <logger name="org.resourcedefence" level="info" additivity="false">
+            <AppenderRef ref="rollingFile"/>
+        </logger>
+    </loggers>
+
+</configuration>
+
+
+
+https://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte3:fdl:logging:log4j_2:%EC%84%A4%EC%A0%95_%ED%8C%8C%EC%9D%BC%EC%9D%84_%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94_%EB%B0%A9%EB%B2%95
+참고.
+
