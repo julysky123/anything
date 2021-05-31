@@ -38,3 +38,6 @@ protected 인 경우 delete static_cast<Derived*>(p); 과 같이 형변환 하�
 가이드라인 참고시.
 1. 가상함수를 처음 만들 때 'virtual' 붙이기.
 2. 가상함수를 재정의할 때 'override' 붙이기.
+
+- 순수 가상 함수
+virtual void Draw() = 0;	//순수 가상함수 (puer virtual function)
