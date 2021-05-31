@@ -34,3 +34,7 @@ https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
 2. 가상함수가 아니면 protected 이어야한다. 
 protected 인 경우 delete static_cast<Derived*>(p); 과 같이 형변환 하여 파생클래스를 delete 한다.
 
+- 가상함수 재정의시 override 붙이기.
+가이드라인 참고시.
+1. 가상함수를 처음 만들 때 'virtual' 붙이기.
+2. 가상함수를 재정의할 때 'override' 붙이기.
