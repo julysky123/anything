@@ -1,0 +1,23 @@
+OCP (Open Close Principle)
+기능 확장에 열려있고 (Open, 모듈 /클래스가 나중에 추가되어도 )
+코드 수정에는 닫혀있어야 (Close, 기존 코드는 수정되지 않게)
+하는 원칙 (Principle)
+
+  강한 결합 (tightly coupling) : People::UseCamera(Camera*) 
+    하나의 클래스가 다른 클래스 사용시 클래스 이름을 직접 사용. 경직. 변경/교체불가능한 디자인.
+
+  약한 결합 (loosely coupling) : People::UseCamera(ICamera*)
+    하나의 클래스가 다른 클래스 사용시 규칙을 담은 추상클래스(인터페이스)를 사용해 접근하는 것.
+   
+  참고 : 추상클래스 : 규칙을 담은 순수 가상함수 + 다른 멤버 / 인터페이스 : 규칙만 있는 경우를 일컬음.
+
+SRP
+
+
+LSP
+
+
+ISP
+
+
+DIP
