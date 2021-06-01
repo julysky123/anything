@@ -2,10 +2,13 @@
  : 이미 존재하는 객체의 복사본을 통해서 새로운 객체를 만드는 디자인 패턴 
  ( Clone() 가상함수.  java에는 clone()함수가 이미 존재. swift에는 copy()멤버함수가 있다.)
  virtual Shape* Clone() { return new Shape(*this); }
+
+2. template method 패턴
+ : 변하지 않는 전체적인 흐름을 기반 클래스가 제공하고 
+ 변해야 하는 것을 가상함수(protected 또는 private)로 해서 파생 클래스가 변경할 수 있게 한다.
+ 상속기반(경직). Edit3 (edit 파생 클래스가 정책을 갖고있음)
+  a. 런타임에 바꿀필요가 전혀 없고 정책을 다른곳에서 쓸 필요가 없는경우. 접근제한자로 정책 보호등이 가능한 이점이 있다.
  
- 2. template method 패턴
-  : 변하지 않는 전체적인 흐름을 기반 클래스가 제공하고 
-  변해야 하는 것을 가상함수(protected 또는 private)로 해서 파생 클래스가 변경할 수 있게 한다.
 protected : 
 	virtual void DrawImp(){cout << "Draw Shape" << endl;}
 public:
@@ -15,4 +18,17 @@ public:
 		cout << "mutex unlock" << endl;
 	}
  
+3. strategy 패턴
+ : 변하는 것을 정의한 "정책 클래스"를 만들고 그걸 이용. 유연하다.
+  a.template method 와는 달리 정책클래스를 다른 곳에서도 쓸 수 있다.
+  b.template method 와는 달리 런타임 중 정책 클래스를 변경하여 다른 정책을 사용할 수 있다.
  
+ 
+ 
+Q1 객체의 생성을 OCP 만족하게 할수 없을까?
+A1 Factory 패턴
+
+
+Q2 Undo/Redo 기능을 넣으려면 어떻게 해야할까?
+A2 Command 패턴
+
