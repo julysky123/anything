@@ -1,0 +1,4 @@
+1. prototype 패턴
+ : 이미 존재하는 객체의 복사본을 통해서 새로운 객체를 만드는 디자인 패턴 
+ ( Clone() 가상함수.  java에는 clone()함수가 이미 존재. swift에는 copy()멤버함수가 있다.)
+ virtual Shape* Clone() { return new Shape(*this); }
