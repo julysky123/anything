@@ -2,3 +2,17 @@
  : 이미 존재하는 객체의 복사본을 통해서 새로운 객체를 만드는 디자인 패턴 
  ( Clone() 가상함수.  java에는 clone()함수가 이미 존재. swift에는 copy()멤버함수가 있다.)
  virtual Shape* Clone() { return new Shape(*this); }
+ 
+ 2. template method 패턴
+  : 변하지 않는 전체적인 흐름을 기반 클래스가 제공하고 
+  변해야 하는 것을 가상함수(protected 또는 private)로 해서 파생 클래스가 변경할 수 있게 한다.
+protected : 
+	virtual void DrawImp(){cout << "Draw Shape" << endl;}
+public:
+	void Draw() {
+		cout << "mutex lock" << endl;
+		DrawImp();
+		cout << "mutex unlock" << endl;
+	}
+ 
+ 
