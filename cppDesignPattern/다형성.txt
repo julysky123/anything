@@ -15,3 +15,10 @@ if else 구문은 새로운걸 추가하면 코드에 변형이 생김. -> OCP�
 Prototype pattern
 복사본 만드는 가상함수는 항상 유용하게 사용된다.
 	virtual Shape* Clone() { return new Shape(*this); }
+
+template method 디자인 패턴
+//공통성과 가변성의 분리.
+//변하지 않는 코드 내부의 변해야 하는 부분이 있다면 분리되어야한다.
+
+//		--> 변하지 않는 전체적인 흐름을 기반 클래스가 제공하고
+// 변해야하는 것을 가상함수(protected 또는 private) 으로 해서 파생 클래스가 변경할 수 있게 한다.
