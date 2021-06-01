@@ -41,3 +41,8 @@ protected 인 경우 delete static_cast<Derived*>(p); 과 같이 형변환 하�
 
 - 순수 가상 함수
 virtual void Draw() = 0;	//순수 가상함수 (puer virtual function)
+
+
+-가상함수 재정의시 리턴타입도 상속계층의 타입으로 변경할 수 있다.
+virtual Shape* Clone() { throw error_not_implementation(); }
+Rect* Clone() override { return new Rect(*this); }
