@@ -22,8 +22,22 @@ public:
  : 변하는 것을 정의한 "정책 클래스"를 만들고 그걸 이용. 유연하다.
   a.template method 와는 달리 정책클래스를 다른 곳에서도 쓸 수 있다.
   b.template method 와는 달리 런타임 중 정책 클래스를 변경하여 다른 정책을 사용할 수 있다.
- 
- 
+  
+struct IValidator {
+	virtual bool validate(std::string s, char c) = 0;
+	virtual bool iscomplete(std::string s) { return true; }
+	virtual ~IValidator() {}
+};
+
+class Edit
+{
+	std::string data;
+	IValidator* pVal = nullptr;
+
+public:
+	void setValidator(IValidator* p) { pVal = p; }
+	std::string getData();
+ }
  
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
 A1 Factory 패턴
