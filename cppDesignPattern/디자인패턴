@@ -46,3 +46,16 @@ A1 Factory 패턴
 Q2 Undo/Redo 기능을 넣으려면 어떻게 해야할까?
 A2 Command 패턴
 
+4. 책임전가 패턴
+사건 (event) 발생시, 처리할 수 있는 객체를 만날 때 까지 고려(chain)에 따라 이동한다.
+
+	//아래 함수가 책임의 전가 (chain of responsibility) 패턴의 핵심입니다.
+	void FireLButtonDown()
+	{
+		//1. event 처리의 우선권은 나에게 있다.
+		if (this->LButtonDown() == true) return;
+
+		//2. event 처리를 하지 않거나, false를 반환한 경우 부모 윈도우에 전달.
+		if (parent != nullptr)
+			parent->FireLButtonDown();
+	}
