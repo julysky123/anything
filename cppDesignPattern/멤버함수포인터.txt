@@ -1,0 +1,54 @@
+테크닉 + 오픈소스 제작 철학. 06/02
+
+클래스의 멤버 변수는 
+객체 여러개 만들면 여러개 늘어나지만
+멤버 함수는 객체를 여러개 만들어도 하나만 존재.
+그러면 x,y가 어떤 객체의 x,y인지 어떻게 알까?
+
+-> 핵심 1. 멤버 함수 호출시 객체의 주소(this)가 같이 전달된다 - this call
+
+class Point
+{
+	int x, y;
+public:
+	void set(int a, int b)
+	{						
+		x = a;				
+		y = b;				
+	}						
+};
+
+	void set(Point* this, int a, int b)
+	{
+		this->x=a;
+		this->y=b; 
+	} 인 것처럼 변경되어 동작. (정확한건 아님) 실제로는 스택, 레지스터 등등사용.
+  
+  p1.set(10,20) 의 동작.
+  
+  	push	20
+		push	10        =>진짜 인자는 스택으로(32bit)
+		mov		ecx, &p1  =>객체 주소는 ecx 레지스터에
+		call	Point::set
+    
+핵심 2. static 멤버함수는 this가 전달되지 않는다.
+
+핵심 3. 일반함수 포인터에 멤버함수의 주소를 담을 수 없다. (this가 추가되므로)
+void(*f2)(int) = &Dialog::Close;  //error
+
+핵심 4. 일반함수 포인터에 static 멤버함수의 주소는 담을 수 있다.
+//static void Close2(int n) {}
+void(*f3)(int) = &Dialog::Close2;
+
+핵심 5. 멤버 함수의 주소를 담는 포인터 :
+  void(Dialog::*f4)(int) = &Dialog::Close;
+  
+핵심 6. 멤버 함수 포인터로 함수 호출하기.
+  (dlg.*f4)(10);		// .* : pointer to member 연산자 (C에는 없고 c++에만 존재)
+  () 괄호 이유 : 연산자 우선순위가 .* 보다 ()가 빨라서 f4(10) 우선 확인 방지.
+  // 일반 함수 포인터와 사용방법이 달라 이상.
+  c++17에 추가된 std::invoke 문법으로 비슷하게 사용가능
+  std::invoke(f1,10) // 일반 함수포인터 f1. f1(10) 의 의미
+  std::invoke(f4, &dlg, 10) // (dlg.*f4)(10)의 의미
+  
+  
