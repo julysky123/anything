@@ -51,6 +51,15 @@ void(*f3)(int) = &Dialog::Close2;
   std::invoke(f1,10) // 일반 함수포인터 f1. f1(10) 의 의미
   std::invoke(f4, &dlg, 10) // (dlg.*f4)(10)의 의미
   
+  참고. std::mem_fn 이란 C++11 문법도 있다.
+	auto f2 = std::mem_fn(&Car::Go);
+	//반환된 f2는 멤버 함수 포인터를 쉽게 사용할 수 있는 객체.
+	// ()로 호출하면서 객체를 1번째 인자로 보내면된다.
+	f2(c, 80);	//c.Go(80);
+	std::cout << typeid(f2).name() << std::endl; //mem_fn 의 반환 타입 구하기. 컴파일러마다 다름.
+
+  
+ 
 핵심 7. call back 함수 구현시.
 // call back 함수를 c++로 만들때는 반드시 static 멤버함수여야 함
 // 그런데 static 멤버함수는 this가 없어서 멤버에 접근 못함.
