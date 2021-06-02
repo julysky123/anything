@@ -1,0 +1,26 @@
+#include <iostream>
+struct Point
+{
+	int x;
+	int y;
+};
+
+int main()
+{
+	int n = 0;
+	int* p1 = &n;		// int 타입 변수의 주소
+
+	int Point::*p2 = &Point::y;		// 멤버 변수(함수가 아님)의 주소
+								//주의. 현재 Point 객체는 없다.
+								// 이 구조체에서 y의 위치를 상대적으로 알려주는 것.
+								//C(linux 커널)의 offsetof()와 같은 기능.
+		
+	std::cout << p2	 << std::endl;	//그런데 1나옴. cout의 버그.
+	printf("%d\n", p2);				// 4나옴. 이게 맞다.
+	
+	// *p2 = 10 // error. 객체가 없다. p2는 offset일뿐.
+
+	Point pt;
+	pt.*p2 = 100;		//이렇게 사용하면됨.
+	std::cout << pt.y << std::endl;
+}
