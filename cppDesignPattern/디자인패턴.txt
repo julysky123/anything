@@ -86,6 +86,19 @@ public:
 // bind를 사용하면 어떤 모양의 함수도 인자가 0개인 함수로 만들 수 있다.
 
 
+7. 중재자 패턴 (다음주 얘기)
+
+//"global default center " 라는 개념을 만들어 봅시다(이 클래스 제작자가 만든 개념)
+	static NotificationCenter& defaultCenter() {
+		static NotificationCenter center;
+		return center;
+	}
+
+// 모든 팀원이 같이 사용하는 통보센터는 아래처럼 꺼내서 사용하면된다.
+NotificationCenter& nc = NotificationCenter::defaultCenter();
+
+
+
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
 A1 Factory 패턴
 
