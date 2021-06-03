@@ -1,0 +1,10 @@
+	std::shared_ptr<MenuItem> p1 = std::make_shared<RedMenu>("RED", 11);
+  
+  class RedMenu : public MenuItem
+{
+public:
+	using MenuItem::MenuItem;	// 기반 클래스의 생성자를 상속해 달라.
+	void OnCommand() override { std::cout << "Red Menu" << std::endl; }
+};
+의 using 문
+
