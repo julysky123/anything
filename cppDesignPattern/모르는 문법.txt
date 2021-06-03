@@ -8,3 +8,24 @@ public:
 };
 의 using 문
 
+
+-함수포인터 클래스
+		c++11 의 function 은 함수포인터를 일반화한 클래스. 유연성이 높다.
+		std::function<함수모양>
+		std::function<void(int)> f;
+		
+
+-바인드 ( M항 함수 -> N항 함수 변경 (M>N)
+		using namespace std::placeholders; // _1, _2, _3 등이 이 namespace 에 있다.
+		std::bind(&foo, _2, _3, 9, _1)(10, 3, 7); // foo(3,7,9,10)
+		
+	-멤버함수도 받을수있다. 이때 객체를 첫번째 인자라고 생각.
+		Camera cam;
+		f = std::bind(&Camera::take, &cam, 3, _1);
+		f(10); // cam.take(3,10);
+
+// bind 철학
+// handler 는 인자가 없는 함수만 담을 수 있다.
+// bind를 사용하면 어떤 모양의 함수도 인자가 0개인 함수로 만들 수 있다.
+// "Adapter패턴의 일종"
+		
