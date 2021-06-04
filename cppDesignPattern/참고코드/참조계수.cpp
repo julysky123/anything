@@ -1,3 +1,7 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
 template<typename T> class RefBase
 {
 	mutable int refCount = 0;	
@@ -29,7 +33,16 @@ public:
 	T& operator*() {return *obj;}
 };
 
-//사용 예제
+//↓↓사용 예제
+
+class Truck : public RefBase<Truck>
+{
+public:
+	~Truck() { cout << "Truck 파괴" << endl; }
+
+	void Go() { cout << "Go" << endl; }
+};
+
 int main()
 {
   //직접 포인터 호출 금지.
