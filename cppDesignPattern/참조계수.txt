@@ -1,0 +1,108 @@
+	//객체를 만드는 것은 어렵지 않다.
+	//객체가 사용되는 모든 곳에서 얘를 제거 해야한다.
+	// (여러곳에서 사용할 수 있으므로)
+	RefBase* p = new RefBase;
+
+	v.push_back(p);
+
+	// 여기서는 더이상 p가 필요없습니다.
+	
+	delete p; // 이렇게 해도 될까요 ?
+  -> 안됨
+  
+  class Car 
+{
+	int mColor;
+	int refCount = 0;
+
+	//protected 소멸자는 외부에서 호출할 수 없다.
+	// 따라서 외부에서 delete 하는 코드 작성시 컴파일에러.
+protected:
+	~Car() { cout << "Car 파괴" << endl; }
+public:
+	void AddRef() { ++refCount; }
+	void Release() { if (--refCount == 0) delete this; }
+};
+
+//규칙 1. 객체를 만들면 참조계수 증가
+//규칙 2. 객체 주소를 복사하면 참조계수 증가.
+//규칙 3 . 포인터 사용후에 참조계수 감소.
+
+
+해당 기능을 class 로 만든다.
+
+//참조계수 기능을 제공하는 기반 클래스
+//참조계수가 필요하면 RefBase로 부터 상속 받으면 된다.
+class RefBase
+{
+	int refCount = 0;
+protected:
+	virtual ~RefBase() { cout << "RefBase 파괴" << endl; }
+public:
+	void AddRef() { ++refCount; }
+	void Release() 
+		//void Release(RefBase* this) 로 들어오기 때문에 RefBase의 소멸자 부름.
+		//해결책 : "RefBase"의 소멸자를 가상함수로 해야한다.
+		//기반 클래스 소멸자는 가상함수이어야한다!
+	{ 
+		if (--refCount == 0) 
+			delete this; 
+	}
+};
+
+가상함수의 오버헤드 문제
+
+템플릿 사용으로 해결.
+template<typename T> class RefBase
+{
+	int refCount = 0;
+protected:
+
+	//가상함수의 오버헤드가 싫다.
+	 ~RefBase() { cout << "RefBase 파괴" << endl; }
+public:
+	void AddRef() { ++refCount; }
+	void Release()
+	{
+		if (--refCount == 0)
+			//	delete this;	//이 순간 this는 RefBase* 이다.
+			// template 으로 하여 클래스명을 넣자.
+			delete static_cast<T*>(this);
+	}
+};
+
+//CRTP (Curiously Reurring Template Pattern )
+// 기반 클래스가 템플릿인데, 파생 클래스 만들때 자신의 이름을 기반클래스의 템플릿 인자로
+// 전달하는 기술
+// c++ 에서만 사용되는 패턴.
+
+CRTP 단점 : std::vector<RefBase*> 과 같이 기반 클래스 포인터로 파생클래스를 담는 기법을 사용할수 없다. (템플릿이라)
+
+
+
+-> 상수 객체에서도 사용가능해야한다.
+
+template<typename T> class RefBase
+{
+	mutable int refCount = 0;	//mutable 멤버 데이터
+								//상수 멤버함수에서도 값을 변경할 수 있게 하는 멤버데이터
+protected:
+
+	//가상함수의 오버헤드가 싫다.
+	~RefBase() { cout << "RefBase 파괴" << endl; }
+public:
+
+	//참조계수 관련 멤버 함수는 "상수 멤버 함수"가 되어야한다.
+	void AddRef() const { ++refCount; }
+	//void Release()	// void Release(RefBase* this)
+	void Release() const	//void Release( const RefBase* this)
+	{
+		if (--refCount == 0)
+			//		delete static_cast<T*>(this);	//const RefBase* => Truck*로 캐스팅이라 에러.
+
+			delete static_cast<const T*>(this);	// ok
+												// const RefBase* => const Truck* 로 캐스팅하는 코드.
+												// const 를 제거하는게 아니라서 static_cast 해도 delete 동작.
+			//delete const_cast<T*>(this);	// const_cast는 동일타입의 상수성만 제거 가능. 여기서 사용하는 문법이 아님.
+	}
+};
