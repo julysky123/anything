@@ -98,6 +98,24 @@ public:
 NotificationCenter& nc = NotificationCenter::defaultCenter();
 
 
+8. 참조계수
+객체를 삭제할 때 객체를 참조했던 모든곳에서  객체 사용이 끝난 이후에야 삭제가 가능하기 때문에
+참조계수를 이용해 현재 참조하고 있는 곳의 개수를 확인.
+
+class Car 
+{
+	int mColor;
+	int refCount = 0;
+protected:
+	~Car() { cout << "Car 파괴" << endl; }
+public:
+	void AddRef() { ++refCount; }
+	void Release() { if (--refCount == 0) delete this; }
+	
+};
+
+외부에서 delete 할수 없도록 소멸자 protected로
+
 
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
 A1 Factory 패턴
