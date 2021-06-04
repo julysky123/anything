@@ -98,23 +98,33 @@ public:
 NotificationCenter& nc = NotificationCenter::defaultCenter();
 
 
-8. 참조계수
-객체를 삭제할 때 객체를 참조했던 모든곳에서  객체 사용이 끝난 이후에야 삭제가 가능하기 때문에
-참조계수를 이용해 현재 참조하고 있는 곳의 개수를 확인.
+8. 프록시 패턴
+//서버를 대신하는 클래스를 만들어 봅시다.
+//대신하는 패턴 : Proxy Pattern
+//remote proxy : 원격지 서버를 대신하는 클래스.
 
-class Car 
+//장점	1. 사용자가 IPC를 몰라도 서버를 사용할 수 있다.
+//		2. 자주 사용되는 연산은 Cache등으로 관리할 수 있다.
+//		3. 그 밖에도 여러가지로 활용 가능
+class Calc
 {
-	int mColor;
-	int refCount = 0;
-protected:
-	~Car() { cout << "Car 파괴" << endl; }
+	int server;
 public:
-	void AddRef() { ++refCount; }
-	void Release() { if (--refCount == 0) delete this; }
-	
+	Calc() {
+		server = ec_find_server("Calc");
+	}
+	int Add(int a, int b) { return ec_send_server(server, 1, a, b); }
+	int Sub(int a, int b) { return ec_send_server(server, 2, a, b); }
 };
 
-외부에서 delete 할수 없도록 소멸자 protected로
+어댑터 패턴과의 차이점. (월요일에 배울 것)
+중간에 대신하는 것을 만드는 패턴 (4가지) : adapter, proxy, bridge, facade 패턴.
+
+//왜 중간계층을 만들었는가? 의도.
+//adapter : 인터페이스의 변경 의미 : (ex list를 스택으로)
+//proxy : 인터페이스의 변경을 위한게 아니고, 대행자를 통해 다양한 활용을 하기 위함.
+
+
 
 
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
