@@ -81,6 +81,32 @@ public:
 
 
 6. Adapter 패턴
+	1. 클래스 어댑터
+	 클래스를 상속받아서 인터페이스를 변경한다.
+	class Text : public TextView, public Shape
+	{
+	public:
+		Text(std::string s) : TextView(s) {}
+
+		void Draw() override {
+			TextView::Show();
+		}
+	};
+
+	
+	2. 객체 어댑터
+	 포인터로 객체를 받아서, 이미 생성한 객체를 특정 형태로 사용할 수 있게 한다.
+	 class Text2 : public Shape
+	{
+		TextView* ptv; //외부에 이미 존재하는 TextView를 가리키게 한다.
+	public:
+		Text2(TextView* p) : ptv(p){}
+
+		void Draw() override {
+			ptv->Show();
+		}
+	};
+
 // bind 철학
 // handler 는 인자가 없는 함수만 담을 수 있다.
 // bind를 사용하면 어떤 모양의 함수도 인자가 0개인 함수로 만들 수 있다.
@@ -156,6 +182,19 @@ public:
 //Composite : 재귀적 포함을 사용한 복합 객체 만들기.
 //Decorator : 재귀적 포함을 사용한 객체에 동적 기능 추가.
 
+10. Facade 패턴
+하위 시스템의 복잡한 절차를 단순화 하는 "포괄적 인터페이스를 지닌 상위 시스템" 을 제공한다.
+
+1차 API C언어 기능별 함수
+2차 API C++클래스내에 C언어의 각 함수를 기능별로 만듦
+3차 API 2차 API 를 묶어서 포괄적인 인터페이스를 제작.
+
+3차를 만드는 것을 Facade패턴이라고 함.
+초급 사용자는 3차 API를 이용해 쉽게 이용.
+고급 사용자는 2차 API를 이용해 세세한 설정하여 이용.
+
+11. Bridge 패턴
+중간에 계층을 만들어 
 
 
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
