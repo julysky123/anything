@@ -125,7 +125,31 @@ public:
 //proxy : 인터페이스의 변경을 위한게 아니고, 대행자를 통해 다양한 활용을 하기 위함.
 
 
+9. 데코레이터 패턴.
+객체와 객체에 기능을 추가하는 객체는 공통의 기반 클래스가 있어야한다.
+struct Item
+{
+	virtual void Fire() = 0;
+	virtual ~Item() {}
+};
 
+class SpaceShip : public Item// 우주 비행선
+{
+public:
+	void Fire() { std::cout << "Fire Missile" << std::endl; }
+};
+
+class LeftMissile : public Item
+{
+	Item* ship;
+public:
+	LeftMissile(Item* s) : ship(s) {}
+	void Fire()
+	{
+		if (ship) ship->Fire();
+		std::cout << "Fire Left Missile" << std::endl;
+	}
+};
 
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
 A1 Factory 패턴
