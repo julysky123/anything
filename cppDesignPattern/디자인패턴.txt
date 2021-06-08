@@ -197,6 +197,29 @@ public:
 중간에 계층을 만들어 
 
 
+12. singleton 패턴
+오직 한개의 객체만 존재하는 것.
+
+//Meyer's 싱글톤 : 오직 한개의 객체를 static 지역변수로 만드는 모델
+//				Effective-c++ 책의 저자인 scott-meyer가처음 제안한 모델.
+class Cursor
+{
+	// 규칙 1. private 생성자
+	// 규칙 2. 복사와 대입 금지. 컴파일러에게 복사 생성자와 대입 연산자 만들지 말라고 요청
+private:
+	Cursor() {}
+	
+	// 규칙 3. 오직 한개의 객체만 만들어 반환 하는 static 함수.
+public:
+	static Cursor& getInstance()
+	{
+		static Cursor instance;
+		return instance;
+	}
+	Cursor(const Cursor&) = delete;
+	Cursor& operator= (const Cursor&) = delete;	//함수 삭제 문법.
+};
+
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
 A1 Factory 패턴
 
