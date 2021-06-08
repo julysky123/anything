@@ -79,3 +79,7 @@ template<typename T> T* Singleton<T>::sinstance = nullptr;
 template<typename T> std::mutex Singleton<T>::mtx;
 
 
+static 멤버 변수 초기화.
+class 밖에서
+std::map<std::string, Image*> Image::image_map; 와 같이 선언한번 한다.
+
