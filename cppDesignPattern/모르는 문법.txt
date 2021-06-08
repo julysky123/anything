@@ -97,4 +97,11 @@ template 로 클래스 인스턴스화 할 때 의 몰랐던 내용.
 //멤버 함수, static 멤버 데이터 : 사용되지 않으면 인스턴스화 x
 //non-static 멤버 데이터 : 객체를 생성하면 무조건 메모리에 놓여야해서 사용된 것으로 간주.
 
+template에 int 도 넣을 수 있음
+template<int N>
+class Shape {
+public:
+	static RegisterShape rs;
+};
+template<int N> RegisterShape Shape<N>::rs(N);
 
