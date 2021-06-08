@@ -220,6 +220,38 @@ public:
 	Cursor& operator= (const Cursor&) = delete;	//함수 삭제 문법.
 };
 
+// CRTP ( Curiously Recurring Template Pattern ) + 객체를 힙에 생성 + 멀티쓰레드 lock unlock.
+// 기반클래스에서 미래에 만들어질 파생 클래스 이름을 사용하는 기술
+template<typename T>
+class Singleton
+{
+protected:
+	Singleton() {}
+	Singleton(const Singleton&) = delete;
+	Singleton& operator= (const Singleton&) = delete;
+	static std::mutex mtx;
+	static T* sinstance;
+public:
+	static T& getInstance()
+	{
+		{
+			std::lock_guard<std::mutex> lg(mtx); 
+			if (sinstance == nullptr)
+				sinstance = new T;
+		}
+		return *sinstance;
+	}
+};
+template<typename T> T* Singleton<T>::sinstance = nullptr;
+template<typename T> std::mutex Singleton<T>::mtx;
+
+//Keyboard 클래스도 싱글톤으로 하고싶어요!
+class Keyboard : public Singleton <Keyboard>
+{
+
+};
+
+
 Q1 객체의 생성을 OCP 만족하게 할수 없을까?
 A1 Factory 패턴
 
