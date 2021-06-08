@@ -202,26 +202,30 @@ public:
 
 //Meyer's 싱글톤 : 오직 한개의 객체를 static 지역변수로 만드는 모델
 //				Effective-c++ 책의 저자인 scott-meyer가처음 제안한 모델.
+	// 규칙 1. private 생성자
+	// 규칙 2. 복사와 대입 금지. 컴파일러에게 복사 생성자와 대입 연산자 만들지 말라고 요청		
+	// 규칙 3. 오직 한개의 객체만 만들어 반환 하는 static 함수.
 class Cursor
 {
-	// 규칙 1. private 생성자
-	// 규칙 2. 복사와 대입 금지. 컴파일러에게 복사 생성자와 대입 연산자 만들지 말라고 요청
 private:
 	Cursor() {}
-	
-	// 규칙 3. 오직 한개의 객체만 만들어 반환 하는 static 함수.
+	Cursor(const Cursor&) = delete;
+	Cursor& operator= (const Cursor&) = delete;	//함수 삭제 문법.
 public:
 	static Cursor& getInstance()
 	{
 		static Cursor instance;
 		return instance;
 	}
-	Cursor(const Cursor&) = delete;
-	Cursor& operator= (const Cursor&) = delete;	//함수 삭제 문법.
 };
 
 // CRTP ( Curiously Recurring Template Pattern ) + 객체를 힙에 생성 + 멀티쓰레드 lock unlock.
 // 기반클래스에서 미래에 만들어질 파생 클래스 이름을 사용하는 기술
+
+//
+//안드로이드 프레임워크의 싱글톤 코드 CRTP로 되어있음. 이를 상속해서 싱글톤 객체 구현 (현재는 미사용, static 으로 사용이 간편)
+// https://github.com/aosp-mirror/platform_system_core/blob/master/libutils/include/utils/Singleton.h
+
 template<typename T>
 class Singleton
 {
