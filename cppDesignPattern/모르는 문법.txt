@@ -64,3 +64,18 @@ public:
 		return instance;
 	}	
 };
+
+//동기화 자원을 사용할 때는 RAII기술(생성자/소멸자에서 lock/unlock)로 해야합니다.
+
+std::mutex mtx;
+std::lock_guard<std::mutex> lg(mtx);
+해당 문법이 생성자에서 mtx.lock() 수행 소멸자에서 mtx.unlock() 수행.
+특정 부분에서 unlock 시키려면 블락걸어서 블락 내에서 std::lock_guard<std::mutex> lg(mtx) 선언하면
+블락 종료시 소멸하며 unlock.
+
+template 문법
+
+template<typename T> T* Singleton<T>::sinstance = nullptr;
+template<typename T> std::mutex Singleton<T>::mtx;
+
+
