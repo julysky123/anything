@@ -44,3 +44,23 @@ const 멤버 함수
 로컬 : Add() -> 1로 변경하여 서버에 전송 -> 서버에서 1을 Add()로 변경하여 활용.
 //proxy : Add -> 1
 //stub : 1 -> Add (서버)
+
+
+
+함수 삭제 문법
+class Cursor
+{
+	// 규칙 1. private 생성자
+	// 규칙 2. 복사와 대입 금지. 컴파일러에게 복사 생성자와 대입 연산자 만들지 말라고 요청
+private:
+	Cursor() {}
+	Cursor(const Cursor&) = delete;
+	Cursor& operator= (const Cursor&) = delete;	//함수 삭제 문법. public에 있어도 잘 동작.
+	// 규칙 3. 오직 한개의 객체만 만들어 반환 하는 static 함수.
+public:
+	static Cursor& getInstance()
+	{
+		static Cursor instance;
+		return instance;
+	}	
+};
