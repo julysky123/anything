@@ -1,1 +1,5 @@
 github.com/codenuri/SOURCE
+
+
+템플릿 책: "C++ template complete guide 2nd" <= 최고의 서적
+그 다음은, Modern C++ Design => 아주 어려운 책
