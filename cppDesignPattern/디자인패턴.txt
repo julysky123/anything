@@ -260,5 +260,51 @@ class Keyboard : public Singleton <Keyboard>
 프로토타입패턴 코드 참고.
 
 
-Q2 Undo/Redo 기능을 넣으려면 어떻게 해야할까?
-A2 Command 패턴
+14. command 패턴
+//stack에 명령을 보관해야함. 명령을 객체화 해야함.
+struct ICommand
+{
+	virtual void Execute() = 0;
+	virtual bool CanUndo() { return false; }
+	virtual void Undo() {}
+	virtual ~ICommand() {}
+};
+
+
+15. 반복자 패턴
+ 모든 컨테이너에 대해 똑같은 방법으로 순회.
+ 	 	C#/Java						STL
+//반복자이동	    MoveNext()같이 인터페이스에 정의된 함수	         ++p
+//		가상함수					    인라인 치환
+//반복자 꺼내기  s.getEnumerator()				   s.begin()
+//		동적 할당된 반복자			         동적할당 아님
+//						                Raw Pointer와 동일한 형태의 인터페이스.
+
+
+
+16.방문자패턴
+ 방문한 모든 컨테이너 요소에 접근하여 동작 수행.
+ 
+template<typename T> struct IVisitor
+{
+public:
+	virtual void Visit(T& e) = 0;
+};
+
+//컨테이너는 방문자를 받아들여야 한다.
+template<typename T> struct IAcceptor
+{
+	virtual void Accept(IVisitor<T>*) = 0;
+	virtual ~IAcceptor() {}
+};
+
+template<typename T> class MyList : public std::list<T>, public IAcceptor<T>
+{
+public:
+	using std::list<T>::list;
+	void Accept(IVisitor<T>* visitor) override
+	{
+		for (auto& e : *this)
+			visitor->Visit(e);
+	}
+};
