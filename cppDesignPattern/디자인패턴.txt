@@ -308,3 +308,64 @@ public:
 			visitor->Visit(e);
 	}
 };
+
+17.  관찰자 패턴
+ex) 엑셀에서 데이터 수정시 차트에 즉각 반영되는 걸 구현.
+각 그래프에서 루프로 table을 관찰하는 것보다 table에서 값 수정시 각 그래프로 통보하는 게 낫다.
+
+차트는 전부 IGraph를 상속. IGraph는 Update method를 갖게 한다.
+테이블의 각 값에는 Vector <Igraph> 가 들어가게 한다.
+
+//관찰자 Observer 패턴
+//객체간 1:N의 관계를 설정하고 한개의 객체(Table, Subject, 관찰의 대상)가
+//변겨오디면 등록된 모든 관찰자(Observer, Graph)에게 통보한다.
+
+//힌트를 주고, 힌트가 없으면 직접 객체에서 꺼내가게도 설계 가능. 관찰자 패턴4 참고.
+
+
+18. 추상팩토리
+Abstract Factory(추상 팩토리) 패턴
+//제품의 군을 생성하기 위한 인터페이스를 정의 한다.
+//어떤 제품의 군을 만들지는 파생클래스가 결정한다.
+//즉, 공장도 인터페이스를 만들고, 교체 가능하게 하자는 패턴.
+
+19. State 패턴 
+구조가 strategy패턴과 완벽히 동일.
+
+20. builder 패턴
+
+21. 메멘토
+객체를 저장했다가 필요할 때 복구하는 패턴
+반드시 저장되어야하는 멤버를 별도 구조체로 설계하면 class 내에 넣는다.
+class Graphics
+{
+	//반드시 저장되어야 하는 멤버를 별도 구조체로 설계.
+	struct Memento
+	{
+		int penWidth;
+		int penColor;
+	};
+	std::map<int, Memento*> memento_map;
+	int penWidth = 1;
+	int penColor = 0;
+	int temporary_data;	//굳이 저장될 필요 없는 항목.
+
+public:
+int SaveState()
+	{
+		static int key = 0;
+		++key;
+
+		Memento* p = new Memento;
+		p->penColor = penColor;
+		p->penWidth = penWidth;
+		memento_map[key] = p;
+		return key;
+	}
+	void RestoreState(int key)
+	{
+		Memento* p = memento_map[key];
+		penColor = p->penColor;
+		penWidth = p->penWidth;
+	}	
+}
