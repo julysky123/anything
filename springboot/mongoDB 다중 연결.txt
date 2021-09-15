@@ -88,7 +88,7 @@ public class SecondaryMongoConfig {}
 
 //reopsitory 구조
 /////
-com.samsung.EARS
+com.samsung.test
     ├ repositories //추후 이름 변경하고 아래에 dto 와 repository 구분할것.
         ├ primary
             관련 entity와 repository
