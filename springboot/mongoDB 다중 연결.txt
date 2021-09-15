@@ -1,0 +1,105 @@
+참고 사이트
+https://blog.marcosbarbero.com/multiple-mongodb-connectors-in-spring-boot/
+
+
+deprecated API 해소 ver
+
+//application.yml
+//////////////////////////////////////////////////////////////////////////////////////
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+
+mongodb:
+  primary:
+    uri: mongodb://USER:PASSWORD@111.222.111.222:12345/TESTDB
+    database: TESTDB
+  secondary:
+    uri: mongodb://localhost:27017/LOCALDB
+    database: LOCALDB
+    
+//////////////////////////////////////////////////////////////////////////////////////
+
+//com.samsung.test.config.MultipleMongoConfig
+//////////////////////////////////////////////////////////////////////////////////////
+//import 생략//
+@Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(MultipleMongoProperties.class)
+public class MultipleMongoConfig {
+
+    private final MultipleMongoProperties mongoProperties;
+
+    @Primary
+    @Bean(name = "primaryMongoTemplate")
+    public MongoTemplate primaryMongoTemplate() throws Exception {
+        return new MongoTemplate(primaryFactory(this.mongoProperties.getPrimary()));
+    }
+
+    @Bean(name = "secondaryMongoTemplate")
+    public MongoTemplate secondaryMongoTemplate() throws Exception {
+        return new MongoTemplate(secondaryFactory(this.mongoProperties.getSecondary()));
+    }
+
+    @Bean
+    @Primary
+    public MongoDatabaseFactory primaryFactory(final MongoProperties mongo) throws Exception {
+        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongo.getUri()),
+                mongo.getDatabase());
+    }
+
+    @Bean
+    public MongoDatabaseFactory secondaryFactory(final MongoProperties mongo) throws Exception {
+        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongo.getUri()),
+                mongo.getDatabase());
+    }
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//com.samsung.test.config.MultipleMongoProperties
+//////////////////////////////////////////////////////////////////////////////////////////
+//import 생략//
+@Data
+@ConfigurationProperties(prefix = "mongodb")
+public class MultipleMongoProperties {
+
+    private MongoProperties primary = new MongoProperties();
+    private MongoProperties secondary = new MongoProperties();
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+//com.samsung.test.config.PrimaryMongoConfig
+///////////////////////////////////////////////////////////////////////////////////////////
+//import 생략//
+@Configuration
+@EnableMongoRepositories(basePackages = "com.samsung.EARS.repositories.primary",
+        mongoTemplateRef = "primaryMongoTemplate")
+public class PrimaryMongoConfig {}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+//com.samsung.test.config.SecondaryMongoConfig
+///////////////////////////////////////////////////////////////////////////////////////////
+//import 생략//
+@Configuration
+@EnableMongoRepositories(basePackages = "com.samsung.EARS.repositories.secondary",
+        mongoTemplateRef = "secondaryMongoTemplate")
+public class SecondaryMongoConfig {}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+//reopsitory 구조
+/////
+com.samsung.EARS
+    ├ repositories //추후 이름 변경하고 아래에 dto 와 repository 구분할것.
+        ├ primary
+            관련 entity와 repository
+        
+        ├ secondary
+            관련 entity와 repository
+            
+            
+/////////////////
+
+동작 확인 완료.
+            
+
+
