@@ -13,10 +13,8 @@ spring:
 mongodb:
   primary:
     uri: mongodb://USER:PASSWORD@111.222.111.222:12345/TESTDB
-    database: TESTDB
   secondary:
     uri: mongodb://localhost:27017/LOCALDB
-    database: LOCALDB
     
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,14 +42,12 @@ public class MultipleMongoConfig {
     @Bean
     @Primary
     public MongoDatabaseFactory primaryFactory(final MongoProperties mongo) throws Exception {
-        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongo.getUri()),
-                mongo.getDatabase());
+        return new SimpleMongoClientDatabaseFactory(mongo.getUri());
     }
 
     @Bean
     public MongoDatabaseFactory secondaryFactory(final MongoProperties mongo) throws Exception {
-        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongo.getUri()),
-                mongo.getDatabase());
+        return new SimpleMongoClientDatabaseFactory(mongo.getUri());
     }
 }
 //////////////////////////////////////////////////////////////////////////////////////////
