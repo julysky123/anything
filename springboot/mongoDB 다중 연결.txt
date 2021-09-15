@@ -72,7 +72,7 @@ public class MultipleMongoProperties {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //import 생략//
 @Configuration
-@EnableMongoRepositories(basePackages = "com.samsung.EARS.repositories.primary",
+@EnableMongoRepositories(basePackages = "com.samsung.test.repositories.primary",
         mongoTemplateRef = "primaryMongoTemplate")
 public class PrimaryMongoConfig {}
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ public class PrimaryMongoConfig {}
 ///////////////////////////////////////////////////////////////////////////////////////////
 //import 생략//
 @Configuration
-@EnableMongoRepositories(basePackages = "com.samsung.EARS.repositories.secondary",
+@EnableMongoRepositories(basePackages = "com.samsung.test.repositories.secondary",
         mongoTemplateRef = "secondaryMongoTemplate")
 public class SecondaryMongoConfig {}
 ///////////////////////////////////////////////////////////////////////////////////////////
