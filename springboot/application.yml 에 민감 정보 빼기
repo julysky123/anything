@@ -1,0 +1,28 @@
+package com.samsung.ears;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@EnableJpaAuditing
+@EnableScheduling
+@SpringBootApplication
+public class EarsParsingApplication {
+
+	public static final String APPLICATION_LOCATIONS = "spring.config.location="
+			+"classpath:application.yml,"
+			+"D:\\development\\localconf\\server-connection.yml";
+
+
+	public static void main(String[] args) {
+
+		new SpringApplicationBuilder(EarsParsingApplication.class)
+				.properties(APPLICATION_LOCATIONS)
+				.run(args);
+	}
+
+}
+
+  와 같이 local에 민감 정보를 빼놓을 것.
+  
