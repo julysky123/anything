@@ -1,0 +1,91 @@
+package com.example.test.elastic.dto.repository;
+
+import com.example.test.elastic.dto.entity.Mailing;
+import com.example.test.elastic.dto.entity.MailingResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class MailingRepositoryImpl implements CustomMailingRepository {
+
+    private final RestHighLevelClient client;
+
+    @Autowired
+    public MailingRepositoryImpl(RestHighLevelClient client) {
+        this.client = client;
+    }
+
+    public <T> ArrayList<T> findByQuery(String indexName, String stringQuery, Class<T> toValueType) throws IOException {
+        Object[] searchAfter = null;
+        ArrayList<SearchHit> allHits = new ArrayList<>();
+        while(true){
+            SearchSourceBuilder searchSourceBuilder =
+                    new SearchSourceBuilder()
+                            .size(1000)
+                            .query(new QueryStringQueryBuilder(stringQuery))
+                            .sort(SortBuilders.fieldSort("@timestamp"));
+
+            if(searchAfter != null){
+                searchSourceBuilder.searchAfter(searchAfter);
+            }
+            SearchRequest searchRequest =
+                    new SearchRequest()
+                            .indices(indexName)
+                            .source(searchSourceBuilder);
+
+            SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+            SearchHit[] hits = searchResponse.getHits().getHits();
+            if(hits.length>0){
+                allHits.addAll(Arrays.asList(hits));
+                SearchHit lastHitDocument = hits[hits.length - 1];
+                searchAfter = lastHitDocument.getSortValues();
+            } else {
+                break;
+            }
+        }
+        ArrayList<T> TUnits = new ArrayList<>();
+        for(SearchHit hit : allHits){
+            T THit = new ObjectMapper().convertValue(hit.getSourceAsMap(),toValueType);
+            TUnits.add(THit);
+        }
+        return TUnits;
+    }
+
+    @Override
+    public ArrayList<MailingResult> findEmailsByUnitOnDate(LocalDate localDate) throws IOException {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateStart=localDate.minusDays(1L).format(dateTimeFormatter)+"T15:00:00Z";
+        String dateEnd=localDate.format(dateTimeFormatter)+"T15:00:00Z";
+
+        String queryString = "(test-service.keyword:email-server)" +
+                " AND (logcategory.keyword:Email)" +
+                " AND (@timestamp:[\"" + dateStart + "\" TO \"" + dateEnd + "\"])";
+
+        System.out.println(queryString);
+
+        ArrayList<MailingResult> mailingUnits = new ArrayList<>();
+        mailingUnits.addAll(findByQuery(getIndexName(localDate.minusDays(1L)),queryString, MailingResult.class));
+        mailingUnits.addAll(findByQuery(getIndexName(localDate),queryString, MailingResult.class));
+
+        return mailingUnits;
+    }
+
+    private <S extends Mailing> String getIndexName(LocalDate localDate){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        String strDate = localDate.format(dateTimeFormatter);
+        return "test_server-" + strDate;
+    }
+}
