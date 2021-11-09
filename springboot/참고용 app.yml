@@ -1,0 +1,26 @@
+
+#mssql DB Connection
+
+spring:
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://IP:PORT;databaseName=DBNAME
+    username: ///
+    password: ///
+
+# mongo DB Connection
+
+mongodb:
+  primary:
+    uri: mongodb://USERNAME:PWD@IP:PORT/DBNAME
+  secondary:
+    uri: mongodb://IP:PORT/DBNAME2
+
+# elastic Search
+elasticsearch:
+  host: "IP:PORT"
+  username: ///
+  password: ///
+  
+server:
+  port: 9092
