@@ -1,0 +1,18 @@
+1.find 명령어 결과로 디렉토리 이동
+
+궁금한게 있습니다. 혹시 find 명령어 결과의 디렉토리로 이동하고 싶은데 find . -name "FILE" -exec cd {} \; 이렇게는 작동되지 않더라고요..
+혹시 갈 수 있는 방법이 있나요??
+
+Blog Icon
+뽀따
+2021.04.05 14:10 신고Reply | Edit
+아마 아래의 명령이 도움되실 것 같습니다.
+
+cd $(find . -name DIR -type d)
+
+만약 DIR 이라는 이름이 여러 개인 경우,
+첫 번째 검색된 DIR을 사용하기 위해 아래와 같이 pipe를 사용할 수도 있습니다. (head, sed 등 다양한 명령어와 조합 가능)
+
+cd $(find . -name DIR -type d | head -n 1)
+
+감사합니다.
