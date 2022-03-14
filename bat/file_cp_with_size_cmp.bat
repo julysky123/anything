@@ -12,19 +12,19 @@ set no_file=1000000000
 :::::::::::::::::::::::::::WORKING PART::::::::::::::::::::::::::
 
 if not exist %copy_path% ( md %copy_path% )
-for %%a in %target_files% do set target_file=%%a & call :Loop
+for %%a in %target_files% do set target_file=%%a & call :LOOP
 exit
 
 :::::::::::::::::::::::::::SUBROUTINE::::::::::::::::::::::::::::
 
-:Loop
+:LOOP
 if not exist %target_path%\%target_file% ( goto :eof )
 
 set s2=%no_file%
 
-REM size comparison
+::::: SIZE COMPARISON
 for /f "tokens=%size_pos% delims= " %%a IN ('dir /-C %%target_path%% ^| findstr %%target_file%%') do set s1=%%a
-for /f "tokens=%size_pos% delims= " %%b IN ('dir /-C %%copy_path%% ^| findstr %%target_file%%') do set s2=%%b
+for /f "tokens=%size_pos% delims= " %%a IN ('dir /-C %%copy_path%% ^| findstr %%target_file%%') do set s2=%%a
 
 if %s1% LSS %s2% ( del %copy_path%\%target_file% )
 
