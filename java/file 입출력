@@ -1,0 +1,83 @@
+입력.
+WriteFile.java
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
+public class WriteFile {
+    private FileChannel fileChannel;
+    private ByteBuffer byteBuffer;
+    private Charset charset;
+    final String newLine = System.getProperty("line.separator");
+    public WriteFile(String fileUrl) throws IOException {
+        Path input = Paths.get(fileUrl);
+        
+        fileChannel = FileChannel.open(input,  StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+        System.out.println(fileChannel);
+        byteBuffer = ByteBuffer.allocateDirect(100*1024*1024);
+        charset = Charset.defaultCharset();
+    }
+
+    public void writeWithNewLine(String str)  {
+        try {
+            byteBuffer = charset.encode(str + newLine);
+            fileChannel.write(byteBuffer);
+            byteBuffer.clear();
+        } catch(Exception e){
+            byteBuffer.clear();
+        }
+    }
+
+    public void writeWithoutNewLine(String str) {
+
+        try{
+            byteBuffer = charset.encode(str);
+            fileChannel.write(byteBuffer);
+            byteBuffer.clear();
+        }catch(Exception e){
+            byteBuffer.clear();
+        }
+    }
+
+    public void close()
+    {
+        try {
+            fileChannel.close();
+            byteBuffer.clear();
+        } catch(Exception e) {};
+    }
+}
+
+
+
+출력
+
+import java.io.*;
+
+
+public class ReadFile {
+
+    private BufferedReader br;
+
+
+    public ReadFile(String fileURL) throws FileNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(fileURL);
+        br = new BufferedReader(new InputStreamReader(fileInputStream));
+    }
+
+    public String readLine() {
+        String strLine="";
+        try{
+            strLine = br.readLine();
+        }catch (IOException e){
+            System.out.println(e.toString());
+        }finally{
+            return strLine;
+        }
+    }
+}
