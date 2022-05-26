@@ -1,0 +1,17 @@
+import java.util.function.Function;
+
+public enum ParsingMethod {
+    MULTI_KEY   (ProvidedFunc::multiKey),
+    SINGLE_KEY  (ProvidedFunc::singleKey),
+    COUNTING    (ProvidedFunc::counting),
+    ETC         (ProvidedFunc::etc);
+
+    ParsingMethod(Function<Data,String> func){
+        this.func = func;
+    }
+    private Function<Data,String> func;
+
+    public String apply(Data data){
+        return this.func.apply(data);
+    }
+}
