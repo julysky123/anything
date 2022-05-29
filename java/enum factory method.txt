@@ -1,0 +1,81 @@
+enum을 이용하여 factory method를 구현할 수 있다.
+
+기본적으로 no Arg Constructor class 라면 아래와 같이 enum을 만들어
+newInstance 를 호출하여 새로운 class를 생성할 수 있다.
+
+-----------------------------------------------
+package com.example.demo.enumTest.enum1;
+
+import com.example.demo.enumTest.connector.*;
+
+import java.util.function.Supplier;
+
+public enum ConnectionType2 {
+
+    FTP(FTPConnector::new),
+    HTTP(HttpConnector::new),
+    SUPERMAN(SuperManConnector::new),
+    NEW(NewConnector::new);
+
+    ConnectionType2(Supplier<BaseConnector> instantiator){
+        this.instantiator= instantiator;
+    }
+
+    Supplier<BaseConnector> instantiator;
+
+    public BaseConnector newInstance(){
+        return this.instantiator.get();
+    }
+}
+-----------------------------------------------------
+
+만일 생성자가 argument를 필요로 한다면
+Supplier 대신 Function, BiFunction을 사용할 수 있고,
+
+그 이상의 argument를 필요로하거나 argument가 generic 이라면
+아래와 같이 구성을 바꾸어 설계할 수 있다.
+
+-----------------------------------------------------
+
+package com.example.demo.enumTest.enum1;
+
+import com.example.demo.enumTest.file_formatter.BaseFormatter;
+import com.example.demo.enumTest.file_formatter.SimpleKeyValue;
+import com.example.demo.enumTest.file_formatter.XmlFormatter;
+import org.w3c.dom.Document;
+
+import java.lang.reflect.InvocationTargetException;
+
+public enum FileType {
+
+    SIMPLE_KEY_VALUE(SimpleKeyValue.class, String.class),
+    XML(XmlFormatter.class, Document.class);
+
+    FileType(Class<? extends BaseFormatter<?>> formatClass,Class<?> rawDataClass){
+        this.formatClass = formatClass;
+        this.rawDataClass = rawDataClass;
+
+    }
+
+    Class<? extends BaseFormatter<?>> formatClass;
+    Class<?> rawDataClass;
+
+    public BaseFormatter<?> newInstance(Object rawData, String rule){
+        try {
+            return this.formatClass.getConstructor(this.rawDataClass,String.class).newInstance(rawData,rule);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+
+------------------------------------------------
+
+generic type을 추가로 저장하였다가 newInstance 에서 활용하도록 하자.
