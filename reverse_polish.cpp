@@ -4,9 +4,11 @@
 #include <iostream>
 #include <cstdlib>      // for exit()
 #include <cctype>       // for is...()
+#include <vector>
+#include <string>
 using namespace std;
 
-void polish(char* s);
+bool polish(char* s);
 int execute();
 int getvalue(int ch);
 int order(int ch);
@@ -14,12 +16,22 @@ void push(int n);
 int pop();
 int top();
 
-struct {
+struct Variable{
 	int type;
 	union {
 		int* p;
 		int n;
 	}v;
+};
+
+enum class SymType{VAR, FUNC};
+struct Sym{
+	string name;
+	SymType type;
+};
+
+class SymManager {
+	vector<Sym> symTable;
 };
 
 
@@ -44,7 +56,8 @@ int main()
 	return 0;
 }
 
-void polish(char* s)
+//한칸씩 token 순회하면서 tokenKind로 비교하도록한다.
+bool polish(char* s)
 {
 	int wk;
 	char* out = plsh_out;
@@ -54,54 +67,85 @@ void polish(char* s)
 		while (isspace(*s)) { ++s; }           /* 공백 건너뛰기         */
 		if (*s == '\0') {                      /* 행의 끝이다           */
 			while (stkct > 0) {                /* 스택의 나머지를 출력  */
-				if ((*out++ = pop()) == '(') {
-					puts("'('가 바르지 않음\n"); exit(1);
+				*out = pop();
+				if (*out  == '(') {
+					puts("'('와 ')'의 개수가 맞지 않습니다.\n"); 
+					(*out)++;
+					return false;
 				}
+				else if (*out == '[') {
+					puts("'['와 ']'의 개수가 맞지 않습니다.\n");
+					(*out)++;
+					return false;
+				}
+				else if (*out == '!') {
+					puts("함수가 닫히지 않았습니다.\n");
+					(*out)++;
+					return false;
+				}
+				(*out)++;
 			}
 			break;
 		}
-		if (islower(*s) || isdigit(*s)) {       /* 변수나 숫자면 출력  */
-			*out++ = *s++; continue;
+		if (islower(*s) || isdigit(*s) || *s=='!') {       /* 변수 or 함수 ident check */
+			//var 인지 func 인지 symtable에서 확인.
+
+			if (islower(*s) || isdigit(*s)) {				//var 이면
+				if (false) { return false; }//syntax	
+				*out++ = *s++; continue;
+			}
+			else if(*s=='!'){		//함수이면.
+				if (false) { return false; }//syntax	
+				push(*s++);
+				s++;
+				continue;
+			}
+			else {	// errornum시 (실제 구문에서는 맨위로 올릴것.)
+				//syntax 오류. 
+			}
+
 		}
 		switch (*s) {
 		case '(':                              /* ( 라면 저장          */
+			if (false) { return false; }//syntax				   
 			push(*s);
 			break;
 		case ')':                              /* ) 라면                */
+			if (false) { return false; }//syntax				   
 			while (top() != '(' && top() != '!') {      /* ( 를 만날 때까지 출력 */
 				wk = pop();
 				*out++ = wk;
-				if (stkct == 0) { puts("'('가 바르지 않음\n"); exit(1); }
+				if (stkct == 0) { puts("'('와 ')'의 개수가 맞지 않습니다.\n"); return false; } //syntax
 			}
 			if (pop() == '!') {
 				*out++ = '!';
 			}
 			break;
 		case '[':
+			if (false) { return false; }//syntax				   
 			push(*s);
 			break;
 		case ']':
+			if (false) { return false; }//syntax				   
 			while ((wk = pop()) != '[') {      /* ( 를 만날 때까지 출력 */
 				*out++ = wk;
-				if (stkct == 0) { puts("'['가 바르지 않음\n"); exit(1); }
+				if (stkct == 0) { puts("'['와 ']'의 개수가 맞지 않습니다.\n"); return false; } //syntax
 			}
 			*out++ = '[';
 			break;
-		case '!':
-			push('!');
-			s++;
-			break;
+
 		case ',':
+			if (false) { return false; }//syntax	//
 			while (top() != '!') {
 				wk = pop();
 				*out++ = wk;
-				if (stkct == 0) { puts("'!'가 바르지 않음\n"); exit(1); }
+				if (stkct == 0) { puts("','의 위치가 올바르지 않습니다.\n"); return false; } //syntax
 			}
 			break;
 
 		default:                               /*  연산자             */
 			if (order(*s) == -1) {             /* 이용부적합문자      */
-				cout << "바르지 않은 문자: " << *s << endl; exit(1);
+				cout << "바르지 않은 문자: " << *s << endl; return false;
 			}            /* 자신보다 우선순위가 높은 요소가 스택 탑에 있는 동안*/
 			while (stkct > 0 && (order(stack[stkct]) >= order(*s))) {
 				*out++ = pop();                /* 스택 내용을 출력 */
@@ -111,6 +155,7 @@ void polish(char* s)
 		s++;
 	}
 	*out = '\0';
+	return true;
 }
 
 int execute()                                            /* 식의 계산  */
@@ -141,6 +186,8 @@ int execute()                                            /* 식의 계산  */
 				break;
 			//	push((int)((int*)d1 + d2)); break;
 			case '!':	//func
+				//symbol table에서 변수 개수 확인 후 pop해서 쓰기.
+
 				//saveStat
 				//push(d1);
 				//push(d2);
